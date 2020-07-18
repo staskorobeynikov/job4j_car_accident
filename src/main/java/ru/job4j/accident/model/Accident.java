@@ -11,11 +11,14 @@ public class Accident {
 
     private String address;
 
-    public static Accident of(String name, String text, String address) {
+    private AccidentType type;
+
+    public static Accident of(String name, String text, String address, AccidentType type) {
         Accident accident = new Accident();
         accident.name = name;
         accident.text = text;
         accident.address = address;
+        accident.type = type;
         return accident;
     }
 
@@ -51,10 +54,22 @@ public class Accident {
         this.address = address;
     }
 
+    public AccidentType getType() {
+        return type;
+    }
+
+    public void setType(AccidentType type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Accident accident = (Accident) o;
         return id == accident.id;
     }

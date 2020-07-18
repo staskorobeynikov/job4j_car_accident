@@ -45,7 +45,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-sm-2" style="font-weight: 900"></label>
+                        <label class="col-form-label col-sm-3" for="type.id" style="font-weight: 900"></label>
+                        <div class="col-sm-5">
+                            <input type='hidden' name='type.id' id="type.id" value="${accident.type.id}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3" style="font-weight: 900"></label>
                         <div class="col-sm-5">
                             <button type="submit" class="btn btn-dark">Сохранить</button>
                         </div>

@@ -38,6 +38,7 @@
                         <th scope="col">Номер</th>
                         <th scope="col">Название</th>
                         <th scope="col">Описание</th>
+                        <th scope="col">Тип</th>
                         <th scope="col">Адрес</th>
                         <th scope="col">Действия</th>
                     </tr>
@@ -53,6 +54,9 @@
                             </td>
                             <td>
                                 <c:out value="${accident.text}"/>
+                            </td>
+                            <td>
+                                <c:out value="${accident.type.name}"/>
                             </td>
                             <td>
                                 <c:out value="${accident.address}"/>
