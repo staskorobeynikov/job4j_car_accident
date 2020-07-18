@@ -20,4 +20,9 @@ public class AccidentService {
     public List<Accident> getAllAccidents() {
         return store.getAllAccidents();
     }
+
+    public void addAccident(Accident accident) {
+        accident.setId(0);
+        store.addAccident(accident);
+    }
 }

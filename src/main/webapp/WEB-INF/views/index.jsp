@@ -20,12 +20,19 @@
 <body>
 <div class="container">
     <div class="row">
+        <ul class="nav">
+            <li class="nav-item" style="font-weight: bold">
+                <a class="nav-link" href="<c:url value="/create"/>">Добавить инцидент</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
         <div class="card" style="width: 100%">
-            <div class="card-header">
-                Перечень строк
+            <div class="card-header" style="font-weight: bold; font-size: larger">
+                Онлайн-страница для отображения и создания инцидентов на дороге
             </div>
             <div class="card-body">
-                <table class="table">
+                <table class="table table-striped, table-bordered">
                     <thead>
                     <tr>
                         <th scope="col">Номер</th>
