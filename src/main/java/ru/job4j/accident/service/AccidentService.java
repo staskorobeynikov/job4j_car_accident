@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.job4j.accident.model.Accident;
 import ru.job4j.accident.model.AccidentType;
+import ru.job4j.accident.model.Rule;
 import ru.job4j.accident.repository.AccidentMem;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AccidentService {
@@ -36,5 +38,13 @@ public class AccidentService {
 
     public AccidentType findTypeById(int id) {
         return store.findTypeById(id);
+    }
+
+    public List<Rule> getAllRules() {
+        return store.getAllRules();
+    }
+
+    public Set<Rule> getSetRules(String[] ids) {
+        return store.getSetRules(ids);
     }
 }

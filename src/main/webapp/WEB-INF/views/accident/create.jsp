@@ -55,6 +55,16 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-form-label col-sm-3" for="rIds" style="font-weight: 900">Статьи инцидента</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" name="rIds" id="rIds" multiple>
+                                <c:forEach var="rule" items="${rules}">
+                                    <option value="${rule.id}">${rule.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-form-label col-sm-3" style="font-weight: 900"></label>
                         <div class="col-sm-5">
                             <button type="submit" class="btn btn-dark">Сохранить</button>
