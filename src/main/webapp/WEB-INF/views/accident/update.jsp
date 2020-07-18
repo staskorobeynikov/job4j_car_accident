@@ -22,30 +22,30 @@
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header" style="font-weight: bold; font-size: larger">
-                Форма для создания записи о происшествии
+                Редактирование записи о происшествии
             </div>
             <div class="card-body">
-                <form action="<c:url value='/save'/>" method='POST'>
+                <form action="<c:url value='/save?id=${accident.id}'/>" method='POST'>
                     <div class="form-group row">
                         <label class="col-form-label col-sm-3" for="name" style="font-weight: 900">Название инцидента</label>
                         <div class="col-sm-5">
-                            <input type='text' class="form-control" name='name' id="name">
+                            <input type='text' class="form-control" name='name' id="name" value="${accident.name}">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-form-label col-sm-3" for="text" style="font-weight: 900">Описание инцидента</label>
                         <div class="col-sm-5">
-                            <input type='text' class="form-control" name='text' id="text">
+                            <input type='text' class="form-control" name='text' id="text" value="${accident.text}">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-form-label col-sm-3" for="address" style="font-weight: 900">Адрес инцидента</label>
                         <div class="col-sm-5">
-                            <input type='text' class="form-control" name='address' id="address">
+                            <input type='text' class="form-control" name='address' id="address" value="${accident.address}">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-sm-3" style="font-weight: 900"></label>
+                        <label class="col-form-label col-sm-2" style="font-weight: 900"></label>
                         <div class="col-sm-5">
                             <button type="submit" class="btn btn-dark">Сохранить</button>
                         </div>

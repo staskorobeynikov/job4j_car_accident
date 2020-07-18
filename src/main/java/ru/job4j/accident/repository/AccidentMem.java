@@ -38,4 +38,8 @@ public class AccidentMem {
     public List<Accident> getAllAccidents() {
         return new ArrayList<>(accidents.values());
     }
+
+    public Accident findById(int id) {
+        return accidents.get(id);
+    }
 }

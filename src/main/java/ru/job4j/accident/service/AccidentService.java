@@ -22,7 +22,10 @@ public class AccidentService {
     }
 
     public void addAccident(Accident accident) {
-        accident.setId(0);
         store.addAccident(accident);
+    }
+
+    public Accident findById(int id) {
+        return store.findById(id);
     }
 }
