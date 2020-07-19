@@ -5,27 +5,31 @@ import org.springframework.stereotype.Service;
 import ru.job4j.accident.model.Accident;
 import ru.job4j.accident.model.AccidentType;
 import ru.job4j.accident.model.Rule;
-import ru.job4j.accident.repository.AccidentMem;
+import ru.job4j.accident.repository.AccidentJdbcTemplate;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class AccidentService {
 
-    private final AccidentMem store;
+    private final AccidentJdbcTemplate store;
 
     @Autowired
-    public AccidentService(AccidentMem store) {
+    public AccidentService(AccidentJdbcTemplate store) {
         this.store = store;
     }
 
     public List<Accident> getAllAccidents() {
+
         return store.getAllAccidents();
     }
 
-    public void addAccident(Accident accident) {
-        store.addAccident(accident);
+    public void addAccident(Accident accident, String[] ids) {
+        if (accident.getId() == 0) {
+            store.addAccident(accident, ids);
+        } else {
+            store.updateAccident(accident);
+        }
     }
 
     public Accident findById(int id) {
@@ -36,15 +40,7 @@ public class AccidentService {
         return store.getAllTypes();
     }
 
-    public AccidentType findTypeById(int id) {
-        return store.findTypeById(id);
-    }
-
     public List<Rule> getAllRules() {
         return store.getAllRules();
-    }
-
-    public Set<Rule> getSetRules(String[] ids) {
-        return store.getSetRules(ids);
     }
 }
