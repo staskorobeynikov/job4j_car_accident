@@ -4,22 +4,18 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.job4j.accident.config.HbmConfig;
 import ru.job4j.accident.model.Accident;
 import ru.job4j.accident.model.AccidentType;
 import ru.job4j.accident.model.Rule;
 
 import javax.persistence.EntityManager;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-@Repository
+//@Repository
 public class AccidentHibernate {
 
     private final SessionFactory sf;
 
-    @Autowired
     public AccidentHibernate(SessionFactory sf) {
         this.sf = sf;
     }
