@@ -25,6 +25,11 @@
                 <a class="nav-link" href="<c:url value="/create"/>">Добавить инцидент</a>
             </li>
         </ul>
+        <ul class="nav">
+            <li class="nav-item" style="font-weight: bold">
+                <a class="nav-link" href="<c:url value="/logout"/>">Выйти из системы</a>
+            </li>
+        </ul>
     </div>
     <div class="row">
         <div class="card" style="width: 100%">
