@@ -27,7 +27,7 @@
         </ul>
         <ul class="nav">
             <li class="nav-item" style="font-weight: bold">
-                <a class="nav-link" href="<c:url value="/logout"/>">Выйти из системы</a>
+                <a class="nav-link" href="<c:url value="/logout"/>"><c:out value="${user.username}"/> | Выйти из системы</a>
             </li>
         </ul>
     </div>
