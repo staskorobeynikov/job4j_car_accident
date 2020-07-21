@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.accident.model.Accident;
-import ru.job4j.accident.service.AccidentService;
+import ru.job4j.accident.service.AccService;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class AccidentControl {
 
-    private final AccidentService service;
+    private final AccService service;
 
     @Autowired
-    public AccidentControl(AccidentService service) {
+    public AccidentControl(AccService service) {
         this.service = service;
     }
 

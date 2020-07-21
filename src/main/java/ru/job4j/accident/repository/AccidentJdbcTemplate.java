@@ -1,17 +1,19 @@
 package ru.job4j.accident.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.job4j.accident.model.Accident;
 import ru.job4j.accident.model.AccidentType;
 import ru.job4j.accident.model.Rule;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
-//@Repository
+@Repository
 public class AccidentJdbcTemplate {
 
     private final JdbcTemplate jdbc;
@@ -20,21 +22,19 @@ public class AccidentJdbcTemplate {
         this.jdbc = jdbc;
     }
 
-    private final RowMapper<Rule> ruleRowMapper = ((rs, i) -> {
-        Rule rule = Rule.of(
+    private final RowMapper<Rule> ruleRowMapper = (
+            (rs, i) -> Rule.of(
                 rs.getInt("id"),
                 rs.getString("name")
-        );
-        return rule;
-    });
+            )
+    );
 
-    private final RowMapper<AccidentType> typeRowMapper = ((rs, i) -> {
-        AccidentType type = AccidentType.of(
-                rs.getInt("id"),
-                rs.getString("name")
-        );
-        return type;
-    });
+    private final RowMapper<AccidentType> typeRowMapper = (
+            (rs, i) -> AccidentType.of(
+                    rs.getInt("id"),
+                    rs.getString("name")
+            )
+    );
 
     private final RowMapper<Accident> accidentRowMapper = ((rs, i) -> {
         Accident accident = Accident.of(
@@ -42,22 +42,52 @@ public class AccidentJdbcTemplate {
                 rs.getString("text"),
                 rs.getString("address"),
                 findTypeById(rs.getInt("type_id")),
-                getSetRules(rs.getString("rIds"))
+                new HashSet<>()
         );
         accident.setId(rs.getInt("id"));
         return accident;
     });
 
+    private final ResultSetExtractor<Map<Integer, Accident>> extractor = (rs) -> {
+        Map<Integer, Accident> result = new HashMap<>();
+        while (rs.next()) {
+            Accident accident = Accident.of(
+                    rs.getString("name"),
+                    rs.getString("text"),
+                    rs.getString("address"),
+                    findTypeById(rs.getInt("type_id")),
+                    new HashSet<>()
+            );
+            accident.setId(rs.getInt("id"));
+            result.putIfAbsent(accident.getId(), accident);
+            result.get(accident.getId()).addRule(findRuleById(rs.getInt("r_id")));
+        }
+        return result;
+    };
+
+    @Transactional
     public void addAccident(Accident accident, String[] rIds) {
-        jdbc.update(
-                "insert into accident (name, text, address, type_id, rIds) "
-                + "values (?, ?, ?, ?, ?)",
-                accident.getName(),
-                accident.getText(),
-                accident.getAddress(),
-                accident.getType().getId(),
-                rIds
-        );
+        String query = "insert into accident (name, text, address, type_id) "
+                + "values (?, ?, ?, ?)";
+        GeneratedKeyHolder holder = new GeneratedKeyHolder();
+        jdbc.update(con -> {
+            PreparedStatement statement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, accident.getName());
+            statement.setString(2, accident.getText());
+            statement.setString(3, accident.getAddress());
+            statement.setInt(4, accident.getType().getId());
+            return statement;
+        }, holder);
+
+        Integer idS = (Integer) holder.getKeys().get("id");
+
+        for (String id : rIds) {
+            jdbc.update(
+                    "insert into accident_rule (fk_accident, fk_rule) values (?, ?)",
+                    idS,
+                    Integer.parseInt(id)
+            );
+        }
     }
 
     public void updateAccident(Accident accident) {
@@ -70,15 +100,19 @@ public class AccidentJdbcTemplate {
     }
 
     public List<Accident> getAllAccidents() {
-        return jdbc.query(
-                "select id, name, text, address, type_id, rIds from accident",
-                accidentRowMapper
-        );
+        String query = "select a.id, a.name, text, address, type_id, r.id as r_id "
+                + "from accident as a join accident_rule ar on a.id = ar.fk_accident "
+                + "join rules r on ar.fk_rule = r.id";
+        Collection<Accident> values = jdbc.query(
+                query,
+                extractor
+        ).values();
+        return values.size() > 0 ? new ArrayList<>(values) : new ArrayList<>();
     }
 
     public Accident findById(int id) {
         return jdbc.queryForObject(
-                "select id, name, text, address, type_id, rIds from accident where id = ?",
+                "select id, name, text, address, type_id from accident where id = ?",
                 accidentRowMapper,
                 id
         );
@@ -110,21 +144,7 @@ public class AccidentJdbcTemplate {
         return jdbc.queryForObject(
                 "select id, name from rules where id = ?",
                 ruleRowMapper,
-                id);
-    }
-
-    public Set<Rule> getSetRules(String ids) {
-        Set<Rule> result = new HashSet<>();
-        for (String id : getRuleIds(ids)) {
-            result.add(findRuleById(Integer.parseInt(id)));
-        }
-        return result;
-    }
-
-    private String[] getRuleIds(String ids) {
-        String[] rIds = ids.split("\\s|,|\\{|}");
-        String[] rsl = new String[rIds.length - 1];
-        System.arraycopy(rIds, 1, rsl, 0, rsl.length);
-        return rsl;
+                id
+        );
     }
 }
