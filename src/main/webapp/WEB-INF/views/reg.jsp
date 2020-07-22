@@ -18,41 +18,24 @@
     <title>Accident</title>
 </head>
 <body>
-<div class="container">
+<div class="container pt-3">
     <div class="row">
-        <c:if test="${not empty errorMessage}">
-            <div style="color:red; font-weight: bold; margin: 30px 0;">
-                    ${errorMessage}
-            </div>
-        </c:if>
-    </div>
-</div>
-<div class="container pt-2">
-    <div class="row">
-        <ul class="nav">
-            <li class="nav-item" style="font-weight: bold">
-                <a class="nav-link" href="<c:url value="/reg"/>">Регистрация</a>
-            </li>
-        </ul>
-    </div>
-    <div class="row">
-        <div class="card" style="width: 40%">
-            <div class="card-header" style="font-weight: bold; font-size: larger">
-                Авторизация
+        <div class="card" style="width: 100%">
+            <div class="card-header">
+                Регистрация
             </div>
             <div class="card-body">
-                <form name='login' action="<c:url value='/login'/>" method='POST'>
+                <form action="<c:url value="/reg"/>" method="post">
                     <div class="form-group">
-                        <label for="username" style="font-weight: bold">UserName:</label>
-                        <input type="text" class="form-control" name="username" id="username" placeholder="Введите ваш логин...">
+                        <label for="username" style="font-weight: bold">Логин: </label>
+                        <input type="text" class="form-control" name="username" id="username" placeholder="Введите ваше логин..." required>
                     </div>
                     <div class="form-group">
-                        <label for="password" style="font-weight: bold">Password:</label>
-                        <input type="text" class="form-control" name="password" id="password" placeholder="Введите ваш пароль...">
+                        <label for="password" style="font-weight: bold">Пароль: </label>
+                        <input type="text" class="form-control" name="password" id="password" placeholder="Введите ваш пароль..." required>
                     </div>
-                    <input name="submit" type="submit" class="btn btn-primary" value="Войти"/>
+                    <input name="submit" type="submit" class="btn btn-primary" value="Зарегистрироваться"/>
                 </form>
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             </div>
         </div>
     </div>
