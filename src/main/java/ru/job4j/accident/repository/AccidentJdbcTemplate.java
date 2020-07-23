@@ -41,7 +41,10 @@ public class AccidentJdbcTemplate {
                 rs.getString("name"),
                 rs.getString("text"),
                 rs.getString("address"),
-                findTypeById(rs.getInt("type_id")),
+                AccidentType.of(
+                        rs.getInt("type_id"),
+                        rs.getString("t_name")
+                ),
                 new HashSet<>()
         );
         accident.setId(rs.getInt("id"));
@@ -55,12 +58,20 @@ public class AccidentJdbcTemplate {
                     rs.getString("name"),
                     rs.getString("text"),
                     rs.getString("address"),
-                    findTypeById(rs.getInt("type_id")),
+                    AccidentType.of(
+                            rs.getInt("type_id"),
+                            rs.getString("t_name")
+                    ),
                     new HashSet<>()
             );
             accident.setId(rs.getInt("id"));
             result.putIfAbsent(accident.getId(), accident);
-            result.get(accident.getId()).addRule(findRuleById(rs.getInt("r_id")));
+            result.get(accident.getId()).addRule(
+                    Rule.of(
+                            rs.getInt("r_id"),
+                            rs.getString("r_name")
+                    )
+            );
         }
         return result;
     };
@@ -100,9 +111,11 @@ public class AccidentJdbcTemplate {
     }
 
     public List<Accident> getAllAccidents() {
-        String query = "select a.id, a.name, text, address, type_id, r.id as r_id "
-                + "from accident as a join accident_rule ar on a.id = ar.fk_accident "
-                + "join rules r on ar.fk_rule = r.id";
+        String query = "select a.id, a.name, text, address, type_id, t.name as t_name, "
+                + "r.id as r_id, r.name as r_name from accident as a "
+                + "join accident_rule ar on a.id = ar.fk_accident "
+                + "join rules r on ar.fk_rule = r.id "
+                + "join types t on a.type_id = t.id";
         Collection<Accident> values = jdbc.query(
                 query,
                 extractor
@@ -112,7 +125,10 @@ public class AccidentJdbcTemplate {
 
     public Accident findById(int id) {
         return jdbc.queryForObject(
-                "select id, name, text, address, type_id from accident where id = ?",
+                "select a.id, a.name, text, address, type_id, "
+                        + "t.name as t_name from accident as a "
+                        + "join types as t on a.type_id = t.id "
+                        + "where a.id = ?",
                 accidentRowMapper,
                 id
         );
@@ -125,26 +141,10 @@ public class AccidentJdbcTemplate {
         );
     }
 
-    public AccidentType findTypeById(int id) {
-        return jdbc.queryForObject(
-                "select id, name from types where id = ?",
-                typeRowMapper,
-                id
-        );
-    }
-
     public List<Rule> getAllRules() {
         return jdbc.query(
                 "select id, name from rules",
                 ruleRowMapper
-        );
-    }
-
-    public Rule findRuleById(int id) {
-        return jdbc.queryForObject(
-                "select id, name from rules where id = ?",
-                ruleRowMapper,
-                id
         );
     }
 }
