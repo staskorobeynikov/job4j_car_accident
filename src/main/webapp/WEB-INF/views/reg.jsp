@@ -18,6 +18,15 @@
     <title>Accident</title>
 </head>
 <body>
+<div class="container">
+    <div class="row">
+        <c:if test="${not empty errorMessage}">
+            <div style="color:red; font-weight: bold; margin: 30px 0;">
+                    ${errorMessage}
+            </div>
+        </c:if>
+    </div>
+</div>
 <div class="container pt-3">
     <div class="row">
         <div class="card" style="width: 100%">
