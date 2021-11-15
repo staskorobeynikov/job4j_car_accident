@@ -7,10 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.accident.model.Accident;
 import ru.job4j.accident.model.User;
 import ru.job4j.accident.repository.AuthorityRepository;
@@ -50,16 +47,16 @@ public class RegControl {
 
     @PostMapping("/reg")
     public String save(@ModelAttribute User user) {
-        boolean rsl = false;
         user.setEnabled(true);
         user.setPassword(encoder.encode(user.getPassword()));
         user.setAuthority(authorities.findByAuthority("ROLE_USER"));
-        try {
-            users.save(user);
-            rsl = true;
-        } catch (DataIntegrityViolationException dive) {
-            LOG.error(dive.getMessage(), dive);
-        }
-        return rsl ? "redirect:/login" : "redirect:/reg?error=true";
+        users.save(user);
+        return "redirect:/login";
+    }
+
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    public String exceptionHandler(Exception e) {
+        LOG.error(e.getLocalizedMessage(), e);
+        return "redirect:/reg?error=true";
     }
 }
